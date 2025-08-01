@@ -1,61 +1,54 @@
 ```python
 import requests
-import json
 
 def fetch_ip_info(ip_address):
     """
-    Fetches geolocation and other information about an IP address
-    using the ipinfo.io API.
-
+    Fetches IP address information from an external API.
+    
     Args:
-        ip_address (str): The IP address to query.
-
-    Returns:
-        dict: A dictionary containing IP information if successful, 
-              None otherwise.
-    """
-    try:
-        # API endpoint for IP information
-        url = f"https://ipinfo.io/{ip_address}/json"
-        response = requests.get(url)
+        ip_address (str): The IP address to look up.
         
-        # Check if the response is successful
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Error: Unable to fetch data for IP {ip_address}, Status code: {response.status_code}")
-            return None
-    except Exception as e:
-        print(f"An exception occurred: {e}")
+    Returns:
+        dict: A dictionary containing IP information.
+    """
+    # Use the ipinfo.io API to get information about the IP address
+    url = f"https://ipinfo.io/{ip_address}/json"
+    response = requests.get(url)
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Error fetching data for IP: {ip_address} - Status Code: {response.status_code}")
         return None
 
 def display_ip_info(ip_info):
     """
-    Displays the fetched IP information in a readable format.
-
+    Displays formatted information about the IP address.
+    
     Args:
-        ip_info (dict): The dictionary containing IP information.
+        ip_info (dict): The IP information dictionary.
     """
     if ip_info:
-        print("IP Information:")
-        for key, value in ip_info.items():
-            print(f"{key.capitalize()}: {value}")
+        print("IP Address Information:")
+        print(f"IP: {ip_info.get('ip')}")
+        print(f"Hostname: {ip_info.get('hostname', 'N/A')}")
+        print(f"City: {ip_info.get('city', 'N/A')}")
+        print(f"Region: {ip_info.get('region', 'N/A')}")
+        print(f"Country: {ip_info.get('country', 'N/A')}")
+        print(f"Location: {ip_info.get('loc', 'N/A')}")
+        print(f"Organization: {ip_info.get('org', 'N/A')}")
     else:
         print("No information available.")
 
 def main():
     """
-    Main function to execute the OSINT script. 
-    Prompts the user for an IP address and displays its information.
+    Main function to run the OSINT IP lookup script.
     """
-    # User input for the IP address
-    ip_address = input("Enter an IP address (or 'exit' to quit): ")
+    # Example IP address for testing; can be modified or taken from user input
+    ip_address = input("Enter an IP address to lookup: ")
     
-    if ip_address.lower() == 'exit':
-        print("Exiting the program.")
-        return
-    
-    # Fetch and display the IP information
+    # Fetch and display IP information
     ip_info = fetch_ip_info(ip_address)
     display_ip_info(ip_info)
 
